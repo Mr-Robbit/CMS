@@ -1,29 +1,34 @@
 <?php 
 if(isset($_POST['create_user'])){
-    $user_firstname = $_POST['user_firstname'];
-    $user_lastname = $_POST['user_lastname'];
-    $username = $_POST['username'];
-    $user_password = $_POST['user_password'];
-    $user_email = $_POST['user_email'];
+    $user_firstname = escape($_POST['user_firstname']);
+    $user_lastname = escape($_POST['user_lastname']);
+    $username = escape($_POST['username']);
+    $user_password = escape($_POST['user_password']);
+    $user_email = escape($_POST['user_email']);
     $user_role = 'suscriber';
 
     $target_dir = "images/";
     $user_image = $target_dir . basename($_FILES["image"]["name"]);
     $user_image_temp = $_FILES['image']['tmp_name'];
 
-    
-    // $member_since = date('d-m-y');
-    
-
-        move_uploaded_file($user_image_temp, "../$user_image");
+    if(!empty($username) && !empty($user_email) && !empty($user_password)){
         global $connection;
+        $username = mysqli_real_escape_string($connection, $username);
+        $user_email = mysqli_real_escape_string($connection, $user_email);
+        $user_password = mysqli_real_escape_string($connection, $user_password);
+        $options = [
+            'cost' => 12,
+        ];
+        $user_password = password_hash('$password', PASSWORD_BCRYPT, $options );
+    // $member_since = date('d-m-y');
+        move_uploaded_file($user_image_temp, "../$user_image");
         $query = "INSERT INTO users(username, user_password, user_firstname, user_lastname, user_email, user_image, user_role) ";
         $query .= " VALUES ('{$username}', '{$user_password}', '{$user_firstname}', '${user_lastname}', '{$user_email}', '{$user_image}', '{$user_role}' ) ";
         $create_user_result = mysqli_query($connection, $query);
         confirm($create_user_result);
 
         echo "User Created" . " " . "<a href='users.php'>Return</a> ";
-        
+    }   
 }
 
 

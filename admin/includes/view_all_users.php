@@ -7,7 +7,7 @@
 <form action="users.php" method="GET">
 <label for="sort_status">Sort by Status</label>
     <select name="sort_status" id="sort_status">
-        <option value="suscriber">members</option>
+        <option value="subscriber">members</option>
         <option value="admin">admins</option>
         <option value="suspended">in the dog house</option>
     </select>
@@ -36,7 +36,7 @@
     <tbody>
     <?php 
         if(isset($_GET['sort_status'])){
-            $sort_by_status = $_GET['sort_status'];
+            $sort_by_status = escape($_GET['sort_status']);
             $query = "SELECT * FROM users WHERE user_role = '{$sort_by_status}' ";
             global $connection;
             $query_all_users = mysqli_query($connection, $query);
@@ -86,19 +86,24 @@
     <?php 
     // delete user
     if(isset($_GET['delete'])){
-        $ID = $_GET['delete'];
-        $del_query = "DELETE FROM users Where user_id = $ID ";
-        $del_user = mysqli_query($connection, $del_query);
-        if(!$del_user){
-            die('delete failed' . mysqli_error($connection));
-        } else {
-            header('Location: users.php');
+        if(isset($_SESSION)){
+            if($_SESSION['role'] == 'admin'){
+
+                $ID = mysqli_real_escape_string($connection, $_GET['delete']);
+                $del_query = "DELETE FROM users Where user_id = $ID ";
+                $del_user = mysqli_query($connection, $del_query);
+                if(!$del_user){
+                    die('delete failed' . mysqli_error($connection));
+                } else {
+                    header('Location: users.php');
+                }
+            }
         }
     }
 
     //approve comment
     if(isset($_GET['promote_to_admin'])){
-        $ID = $_GET['promote_to_admin'];
+        $ID = escape($_GET['promote_to_admin']);
         $approve_query = "UPDATE users SET user_role='admin' WHERE user_id = $ID ";
         $approve_promote = mysqli_query($connection, $approve_query);
         if(!$approve_promote){
@@ -110,8 +115,8 @@
 
     // Deny comment
     if(isset($_GET['demote_to_sub'])){
-        $ID = $_GET['demote_to_sub'];
-        $deny_query = "UPDATE users SET user_role='suscriber' WHERE user_id = $ID ";
+        $ID = escape($_GET['demote_to_sub']);
+        $deny_query = "UPDATE users SET user_role='subscriber' WHERE user_id = $ID ";
         $deny_res = mysqli_query($connection, $deny_query);
         if(!$deny_res){
             die('deny failed' . mysqli_error($connection));

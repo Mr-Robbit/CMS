@@ -1,4 +1,4 @@
-<?php include "includes/db.php" ?>
+
 <?php include "includes/header.php" ?>
 
 
@@ -11,8 +11,8 @@
 
         <div class="row">
             <h1 class="page-header">
-                Page Heading
-                <small>Secondary Text</small>
+                Posts
+                
             </h1>
     
             <!-- Blog Entries Column -->
@@ -20,21 +20,35 @@
                 <?php 
                 // post show 
                 if(isset($_GET['p_id'])){
-                    $post_id = $_GET['p_id'];
-                }
-                    $query = "SELECT * FROM posts WHERE post_id = $post_id ";
-                    $select_all_posts = mysqli_query($connection, $query);
+                    $post_id = escape($_GET['p_id']);
+                    $view_query = " UPDATE posts SET post_view_count = post_view_count + 1 WHERE post_id = $post_id ";
+                    $update_views = mysqli_query($connection, $view_query);
+                    if(!$update_views){
+                        die("query failed");
+                    }
+                    if(isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){
+                        $query = "SELECT * FROM posts WHERE post_id = $post_id ";    
+                    }else{
 
+                        $query = "SELECT * FROM posts WHERE post_id = $post_id AND post_status = 'approved' ";
+                    }
+                    $select_all_posts = mysqli_query($connection, $query);
+                    if(mysqli_num_rows($select_all_posts) < 1){
+                        echo "<h1 class='text-center'>No Post Available</h1>";
+                    } else {
+
+                    
+                    
                     while($row = mysqli_fetch_assoc($select_all_posts)){
                         $post_title = $row['post_title'];
                         $post_author = $row['post_author'];
                         $post_date = $row['post_date'];
                         $post_image = $row['post_image'];
                         $post_content = $row['post_content'];
-
+                        
                         ?>
 
-                        <!-- First Blog Post -->
+                                                <!-- First Blog Post -->
                         <h2>
                             <a href="#"><?php echo $post_title ?></a>
                         </h2>
@@ -43,20 +57,25 @@
                         </p>
                         <p><span class="glyphicon glyphicon-time"></span> <?php echo $post_date ?></p>
                         <hr>
-                        <img height="200" width="auto" src="<?php echo $post_image ?>" alt="">
+                        <img height="200" width="auto" src="/demo/CMS/<?php echo $post_image ?>" alt="">
                         <hr>
                         <p><?php echo $post_content ?></p>
-                       
+
 
                         <hr>       
-                    <?php } ?>
+
+                    <?php }
+                
+                ?>
                     <!-- // create comment  -->
-                    <?php 
-                        if(isset($_POST['create_comment'])){
-                            $comment_author = $_POST['comment_author'];
-                            $comment_email = $_POST['comment_email'];
-                            $comment_content = $_POST['comment_content'];
-                            
+                <?php 
+                    if(isset($_POST['create_comment'])){
+                        $the_post_id = escape($_GET['p_id']);
+                        $comment_author = escape($_POST['comment_author']);
+                        $comment_email = escape($_POST['comment_email']);
+                        $comment_content = escape($_POST['comment_content']);
+                        if(!empty($comment_author) && !empty($comment_email) && !empty($comment_content)){
+
                             $query = "INSERT INTO comments(comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date) ";
                             $query .= " VALUES($post_id, '{$comment_author}', '{$comment_email}', '{$comment_content}', 'pending', now()) ";
                             $create_comment_result = mysqli_query($connection, $query);
@@ -64,16 +83,21 @@
                                 die('query error' . mysqli_error($connection));
                             }
                             
-                            $query = "UPDATE posts SET post_comment_count = post_comment_count + 1 WHERE post_id = $post_id ";
-                            $res = mysqli_query($connection, $query);
-                            if(!$res){
-                                die('error' . mysqli_error($connection));
-                            }
-
+                            // $query = "UPDATE posts SET post_comment_count = post_comment_count + 1 WHERE post_id = $post_id ";
+                            // $res = mysqli_query($connection, $query);
+                            // if(!$res){
+                            //     die('error' . mysqli_error($connection));
+                            // }
+                        } else {
+                            echo "<script>alert('Fields Cannot be empty')</script>";
                         }
-                    
-                    
-                    ?>
+                        
+                        
+
+                    }
+                
+                
+                ?>
                     
 
                 <!-- Comments Form -->
@@ -87,7 +111,7 @@
                             <label for="Author">Author</label>
                             <input type="text" id="author" class="form-control" name="comment_author">
                         </div>
-                    <form role="form">
+                    
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" id="email" class="form-control" name="comment_email">
@@ -107,7 +131,7 @@
                 //view all comments related to post
                     $query = "SELECT * FROM comments WHERE comment_post_id = $post_id ";
                     $query .= "AND comment_status ='approved' ";
-                    $query .= "ORDER BY comment_id DESC";
+                    $query .= " ORDER BY comment_id DESC";
                     $show_comments_query = mysqli_query($connection, $query);
                     while($row = mysqli_fetch_assoc($show_comments_query)){
                         $comment_author = $row['comment_author'];
@@ -126,14 +150,17 @@
                             <?php echo $comment_content ?>
                     </div>
                 </div>        
-                    <?php } ?>
+                    <?php } } } else {
+                    header('Location: index.php');
+                }
+                ?>
                 
                 
          
 
                 <!-- Comment -->
                
-                </div> 
+            </div> 
 
     
 
@@ -143,7 +170,7 @@
         </div>
         <!-- /.row -->
 
-        <hr>
+    <hr>
 
         <!-- Footer -->
         <?php include "includes/footer.php"; ?>

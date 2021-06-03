@@ -33,7 +33,7 @@
     <tbody>
     <?php 
         if(isset($_GET['sort'])){
-            $sort_by_status = $_GET['sort_status'];
+            $sort_by_status = escape($_GET['sort_status']);
             $query = "SELECT * FROM comments WHERE comment_status = '{$sort_by_status}'";
             global $connection;
             $query_all_comments = mysqli_query($connection, $query);
@@ -86,7 +86,7 @@
     <?php 
     // delete comment
     if(isset($_GET['delete'])){
-        $ID = $_GET['delete'];
+        $ID = escape($_GET['delete']);
         $del_query = "DELETE FROM comments Where comment_id = $ID ";
         $del_res = mysqli_query($connection, $del_query);
         if(!$del_res){
@@ -104,7 +104,7 @@
 
     //approve comment
     if(isset($_GET['approve'])){
-        $ID = $_GET['approve'];
+        $ID = escape($_GET['approve']);
         $approve_query = "UPDATE comments SET comment_status='Approved' WHERE comment_id = $ID ";
         $approve_res = mysqli_query($connection, $approve_query);
         if(!$approve_res){
@@ -116,7 +116,7 @@
 
     // Deny comment
     if(isset($_GET['deny'])){
-        $ID = $_GET['deny'];
+        $ID = escape($_GET['deny']);
         $deny_query = "UPDATE comments SET comment_status='Denied' WHERE comment_id = $ID ";
         $deny_res = mysqli_query($connection, $deny_query);
         if(!$deny_res){

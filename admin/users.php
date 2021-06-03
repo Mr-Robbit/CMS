@@ -31,6 +31,10 @@
                                 case 'edit_user';
                                     include "includes/edit_user.php";
                                     break;
+                                
+                                case 'change_password';
+                                    include "includes/edit_password.php";
+                                    break;
 
                                 // case 'delete_post.php';
                                 //     include "includes/delete_post.php";

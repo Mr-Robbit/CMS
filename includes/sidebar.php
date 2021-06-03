@@ -1,4 +1,12 @@
-
+<?php 
+    if(ifItIsMethod('post')){
+        if(isset($_POST['username']) && isset($_POST['password'])){
+            loginUser($_POST['username'], $_POST['password']);
+        }else {
+            redirect('index');
+        }
+    }
+?>
 <div class=" col-sm-12 col-md-4">
 
 
@@ -21,21 +29,33 @@
     </div>
     
     <div class="well">
-        <h4>Login</h4>
-            <form action="includes/login.php" method="post">
-            <div class="form-group">
-               
-                <input type="text" name="username" placeholder="Username or Email" class="form-control">
-                
-            </div>
-            <div class="input-group">
-               
-                <input type="password" name="user_password" id="user_password" class="form-control" placeholder="password">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" name="login" type="submit">Login</button>
-                </span>
-            </div>
-            </form>
+        <?php 
+        if(isLoggedIn()){?>
+            <a class="btn btn-danger btn-block" href="includes/logout.php">Logout</a>
+            <hr>
+        <?php } else {?>
+
+            <h4>Login</h4>
+                <form method="post">
+                <div class="form-group">
+                   
+                    <input type="text" name="username" placeholder="Username or Email" class="form-control">
+                    
+                </div>
+                <div class="input-group">
+                   
+                    <input type="password" name="password" id="password" class="form-control" placeholder="password">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" name="login" type="submit">Login</button>
+                        <a class="btn btn-success" href="registration.php">Register</a>
+                    </span>
+                </div>
+                </form>
+                <a class="text-center" href="/forgot.php">Forgot Password</a>
+            
+        <?php }
+            
+        ?>
         
         <!-- /.input-group -->
     </div>

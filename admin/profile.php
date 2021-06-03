@@ -15,18 +15,18 @@
             $user_lastname = $row['user_lastname'];
             $user_email = $row['user_email'];
             $user_image = $row['user_image'];
-            $user_role = $row['user_role'];
+            
         }
 
     }
 
     if(isset($_POST['update_user'])){
-        $username = $_POST['username'];
-        $user_firstname = $_POST['user_firstname'];
-        $user_lastname = $_POST['user_lastname'];
-        $user_email = $_POST['user_email'];
-        $user_image = $_FILES['user_image']['name'];
-        $user_image_temp = $_FILES['user_image']['tmp_name'];
+        $username = escape($_POST['username']);
+        $user_firstname = escape($_POST['user_firstname']);
+        $user_lastname = escape($_POST['user_lastname']);
+        $user_email = escape($_POST['user_email']);
+        $user_image = escape($_FILES['user_image']['name']);
+        $user_image_temp = escape($_FILES['user_image']['tmp_name']);
 
         move_uploaded_file($user_image_temp, "../$user_image");
 

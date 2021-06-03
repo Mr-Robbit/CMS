@@ -13,5 +13,15 @@
             "database": "cms",
             "username": "root"
         }
-    ]
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/.history": true,
+        ".history": true
+    },
+    "explorerExclude.backup": null
 }

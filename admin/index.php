@@ -1,7 +1,9 @@
 <?php include "includes/admin_header.php"?>
 
     <div id="wrapper">
-
+    <?php 
+        
+    ?>
 
     <?php include "includes/admin_navbar.php" ?>
 
@@ -31,13 +33,8 @@
                                     <div class="col-xs-3">
                                         <i class="fa fa-file-text fa-5x"></i>
                                     </div>
-                                    <div class="col-xs-9 text-right">
-                                        <?php 
-                                            $query = " SELECT * FROM posts ";
-                                            $select_all_posts = mysqli_query($connection, $query);
-                                            $num_posts = mysqli_num_rows($select_all_posts);
-                                        ?>
-                                        <div class='huge'><?php echo $num_posts ?></div>
+                                    <div class="col-xs-9 text-right">                                        
+                                        <div class='huge'><?php echo $num_posts = recordCount('posts'); ?></div>
                                         <div>Posts</div>
                                     </div>
                                 </div>
@@ -51,7 +48,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6">
                         <div class="panel panel-green">
                             <div class="panel-heading">
@@ -59,13 +55,8 @@
                                     <div class="col-xs-3">
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
-                                    <div class="col-xs-9 text-right">
-                                        <?php 
-                                            $query = " SELECT * FROM comments ";
-                                            $select_all_comments = mysqli_query($connection, $query);
-                                            $num_comments = mysqli_num_rows($select_all_comments);
-                                        ?>
-                                    <div class='huge'><?php echo $num_comments ?> </div>
+                                    <div class="col-xs-9 text-right">                                       
+                                    <div class='huge'><?php echo $num_comments = recordCount('comments'); ?> </div>
                                     <div>Comments</div>
                                     </div>
                                 </div>
@@ -79,7 +70,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-6">
                         <div class="panel panel-yellow">
                             <div class="panel-heading">
@@ -87,13 +77,8 @@
                                     <div class="col-xs-3">
                                         <i class="fa fa-user fa-5x"></i>
                                     </div>
-                                    <div class="col-xs-9 text-right">
-                                        <?php 
-                                            $query = " SELECT * FROM users ";
-                                            $select_all_users = mysqli_query($connection, $query);
-                                            $num_users = mysqli_num_rows($select_all_users);
-                                        ?>
-                                    <div class='huge'><?php echo $num_users ?></div>
+                                    <div class="col-xs-9 text-right">                                        
+                                    <div class='huge'><?php echo $num_users = recordCount('users'); ?></div>
                                         <div> Users</div>
                                     </div>
                                 </div>
@@ -106,8 +91,7 @@
                                 </div>
                             </a>
                         </div>
-                    </div>
-                    
+                    </div>                    
                     <div class="col-lg-3 col-md-6">
                         <div class="panel panel-red">
                             <div class="panel-heading">
@@ -115,13 +99,8 @@
                                     <div class="col-xs-3">
                                         <i class="fa fa-list fa-5x"></i>
                                     </div>
-                                    <div class="col-xs-9 text-right">
-                                        <?php 
-                                            $query = " SELECT * FROM categories ";
-                                            $select_all_categories = mysqli_query($connection, $query);
-                                            $num_categories = mysqli_num_rows($select_all_categories);
-                                        ?>
-                                        <div class='huge'><?php echo $num_categories ?> </div>
+                                    <div class="col-xs-9 text-right">                                        
+                                        <div class='huge'><?php echo $num_categories = recordCount('categories'); ?> </div>
                                         <div>Categories</div>
                                     </div>
                                 </div>
@@ -139,17 +118,10 @@
                 <!-- /.row -->
 
                 <?php 
-                    $query = " SELECT * FROM posts WHERE post_status = 'pending' ";
-                    $select_all_draft_posts = mysqli_query($connection, $query);
-                    $post_draft_count = mysqli_num_rows($select_all_draft_posts);
-
-                    $query = " SELECT * FROM comments WHERE comment_status = 'pending' ";
-                    $select_all_pending_comments = mysqli_query($connection, $query);
-                    $comment_pending_count = mysqli_num_rows($select_all_pending_comments);
-                    
-                    $query = " SELECT * FROM users WHERE user_role = 'admin' ";
-                    $select_all_user_admins = mysqli_query($connection, $query);
-                    $user_admin_count = mysqli_num_rows($select_all_user_admins);
+                    $post_published_count = checkStatus('posts', 'post_status', 'approved');                    
+                    $post_draft_count = checkStatus('posts', 'post_status', 'pending');                    
+                    $comment_pending_count = checkStatus('posts', 'post_status', 'pending');                   
+                    $user_admin_count = checkStatus('users', 'user_role', 'admin');
                 ?>
                 <div class="row">
                     

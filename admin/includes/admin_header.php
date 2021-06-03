@@ -1,9 +1,9 @@
 <?php ob_start(); ?>
 <?php session_start(); ?>
 <?php include "../includes/db.php" ?>
-<?php include "functions.php"?>
+<?php include "../includes/functions.php"?>
 <?php 
-    if(!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'){
+    if(!isAdmin($_SESSION['username'])){
         $user_role = $_SESSION['role'];
         return header('Location: ../index.php');
     } 
@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Admin Area</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">

@@ -1,4 +1,4 @@
-<?php include "includes/db.php" ?>
+
 <?php include "includes/header.php" ?>
 
 
@@ -19,7 +19,7 @@
             <div class="col-sm-6 col-md-8">
             <?php 
                 if(isset($_POST['submit'])){
-                    $search = $_POST['search'];
+                    $search = escape($_POST['search']);
                     
                     $query = "SELECT * FROM posts WHERE post_title LIKE '%$search%'";
                     $search_query = mysqli_query($connection, $query);
@@ -39,24 +39,27 @@
                             $post_author = $row['post_author'];
                             $post_date = $row['post_date'];
                             $post_image = $row['post_image'];
+                            $post_status = $row['post_status'];
                             $post_content = substr($row['post_content'],0, 100) . " ..." ;
+                            if($post_status === "approved"){
 
-                            ?>
-                        <h2>
-                            <a href="#"><?php echo $post_title ?></a>
-                        </h2>
-                        <p class="lead">
-                            by <a href="index.php"><?php echo $post_author ?></a>
-                        </p>
-                        <p><span class="glyphicon glyphicon-time"></span> <?php echo $post_date ?></p>
-                        <hr>
-                        <img height="200" width="auto" src="<?php echo $post_image ?>" alt="">
-                        <hr>
-                        <p><?php echo $post_content ?></p>
-                        <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
-
-                        <hr>       
-                    <?php } 
+                                ?>
+                                <h2>
+                                    <a href="#"><?php echo $post_title ?></a>
+                                </h2>
+                                <p class="lead">
+                                    by <a href="index.php"><?php echo $post_author ?></a>
+                                </p>
+                                <p><span class="glyphicon glyphicon-time"></span> <?php echo $post_date ?></p>
+                                <hr>
+                                <img height="200" width="auto" src="<?php echo $post_image ?>" alt="">
+                                <hr>
+                                <p><?php echo $post_content ?></p>
+                                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                
+                                <hr>       
+                            <?php }
+                        } 
                 }
             } ?>
             </div> 

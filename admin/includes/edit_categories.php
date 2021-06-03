@@ -1,7 +1,7 @@
 <?php // Edit categories
     if(isset($_GET['edit'])){
-        $update_cat_id = $_GET['edit'];
-        $cat_title_single = $_GET['editname'];
+        $update_cat_id = escape($_GET['edit']);
+        $cat_title_single = escape($_GET['editname']);
         $btn_text = "Update Category";
         $form_id = "edit_cat_form";
         $label_for = "edit_cat_title";
@@ -11,14 +11,16 @@
         $btn_name = "submit_cat";
         $input_value = $cat_title_single;
         if(isset($_POST['submit_cat'])){
-            $cat_title = $_POST['edit_cat_title'];
-            $update_query = "UPDATE categories SET cat_title = '$cat_title' WHERE cat_id = $update_cat_id";
-            $updated_cat = mysqli_query($connection, $update_query);
-            if(!$updated_cat){
+            $cat_title = escape($_POST['edit_cat_title']);
+            $stmt = mysqli_prepare($connection, "UPDATE categories SET cat_title = ? WHERE cat_id = ?" );
+            mysqli_stmt_bind_param($stmt, 'si', $cat_title, $update_cat_id);
+            mysqli_stmt_execute($stmt);
+            
+            if(!$stmt){
                 die('Failed to update' . mysqli_error($connection));
-            } else {
-                header('Location: categories.php');
-            }
+            } 
+            mysqli_stmt_close($stmt);
+            redirect('categories.php');
             
         }
     } else {
@@ -34,6 +36,7 @@
 
         } 
 
+        
 ?>
 
 <form class="" action="#" method="post" id="<?php echo $form_id; ?> ">
